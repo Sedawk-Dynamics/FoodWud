@@ -12,11 +12,10 @@ const footerLinks = {
     { label: 'Contact Us', href: '#contact' },
   ],
   Products: [
-    { label: 'Premium Tea', href: '#products' },
-    { label: 'Pure Spices', href: '#products' },
+    { label: 'Upton Tea', href: '#products' },
     { label: 'Fox Nuts (Makhana)', href: '#products' },
-    { label: "Nature's Honey", href: '#products' },
-    { label: 'More Coming Soon', href: '#products' },
+    { label: 'Mustard Oil', href: '#products' },
+    { label: 'Spice Range — Coming Soon', href: '#products' },
   ],
   Legal: [
     { label: 'Privacy Policy', href: '#' },
@@ -25,6 +24,47 @@ const footerLinks = {
     { label: 'Certifications', href: '#' },
   ],
 }
+
+const socials = [
+  {
+    label: 'Facebook',
+    href: 'https://www.facebook.com/foodwud',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/foodwud',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="2" y="2" width="20" height="20" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    label: 'YouTube',
+    href: 'https://www.youtube.com/@foodwud',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33zM9.75 15.02V8.48l5.75 3.27z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/foodwud',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM6 9H2v12h4zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+      </svg>
+    ),
+  },
+]
 
 export default function Footer() {
   const scrollToSection = (href: string) => {
@@ -83,27 +123,79 @@ export default function Footer() {
               height={50}
               className="h-12 w-auto object-contain mb-4"
             />
+            <p className="text-[#c9a227] font-serif text-base italic mb-3">
+              Delivering Purity. Packaging Trust. Serving Every Home.
+            </p>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs mb-6">
-              A fast-growing FMCG company specializing in the packaging and marketing of high-quality food products under its own brand name from the pristine Darjeeling region.
+              An emerging FMCG company committed to delivering premium-quality food products to households across India — carefully sourced, hygienically processed, and packaged to modern quality standards.
             </p>
             <div className="space-y-2 text-sm text-white/40">
               <div className="flex items-start gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-0.5 flex-shrink-0">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
                 </svg>
-                <span>Panchkalguri, Matigara, Siliguri, WB 734010</span>
+                <span>Panchkulguri, Nimai, Matigara, Siliguri, Darjeeling, WB 734010</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-0.5 flex-shrink-0">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <span className="flex flex-wrap gap-x-2">
+                  <a href="tel:08062179167" className="hover:text-[#c9a227] transition-colors">080 6217 9167</a>
+                  <a href="tel:+919031232418" className="hover:text-[#c9a227] transition-colors">+91 90312 32418</a>
+                  <a href="tel:+919709261965" className="hover:text-[#c9a227] transition-colors">+91 97092 61965</a>
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                 </svg>
-                <span>info@foodwud.com</span>
+                <a href="mailto:info@foodwud.com" className="hover:text-[#c9a227] transition-colors">info@foodwud.com</a>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
+                  <circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20 15.3 15.3 0 0 1 0-20z" />
+                </svg>
+                <a href="https://www.foodwud.com" className="hover:text-[#c9a227] transition-colors">www.foodwud.com</a>
               </div>
               <div className="flex items-center gap-2">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
                   <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18" />
                 </svg>
                 <span>GST: 19AAGCF7122F1ZP</span>
+              </div>
+            </div>
+
+            {/* Certifications */}
+            <div className="flex flex-wrap gap-2 mt-5">
+              {[
+                { label: '100% Trusted' },
+                { label: 'ISO 9001:2015' },
+                { label: 'FSSAI 22826080000524' },
+              ].map((c) => (
+                <span
+                  key={c.label}
+                  className="px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#c9a227]/10 text-[#c9a227] border border-[#c9a227]/25"
+                >
+                  {c.label}
+                </span>
+              ))}
+            </div>
+
+            {/* Social */}
+            <div className="mt-6">
+              <p className="text-[#c9a227] font-semibold text-xs tracking-widest uppercase mb-3">Follow Us</p>
+              <div className="flex items-center gap-3">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    aria-label={s.label}
+                    className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-[#0d3d1a] hover:bg-[#c9a227] hover:border-[#c9a227] transition-all duration-300"
+                  >
+                    {s.icon}
+                  </a>
+                ))}
               </div>
             </div>
           </div>

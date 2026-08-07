@@ -16,7 +16,7 @@ export default function ContactSection() {
     setFormData({ name: '', email: '', phone: '', message: '' })
   }
 
-  const contactItems = [
+  const contactItems: { icon: React.ReactNode; label: string; lines: { text: string; href?: string }[] }[] = [
     {
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -24,7 +24,7 @@ export default function ContactSection() {
         </svg>
       ),
       label: 'Address',
-      value: 'Panchkalguri, Matigara, Siliguri,\nDarjeeling, West Bengal 734010',
+      lines: [{ text: 'Panchkulguri, Nimai, Matigara, Siliguri,\nDarjeeling, West Bengal 734010' }],
     },
     {
       icon: (
@@ -33,7 +33,11 @@ export default function ContactSection() {
         </svg>
       ),
       label: 'Phone & WhatsApp',
-      value: 'Available on enquiry',
+      lines: [
+        { text: '080 6217 9167', href: 'tel:08062179167' },
+        { text: '+91 90312 32418', href: 'tel:+919031232418' },
+        { text: '+91 97092 61965', href: 'tel:+919709261965' },
+      ],
     },
     {
       icon: (
@@ -41,8 +45,11 @@ export default function ContactSection() {
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
         </svg>
       ),
-      label: 'Email',
-      value: 'info@foodwud.com',
+      label: 'Email & Website',
+      lines: [
+        { text: 'info@foodwud.com', href: 'mailto:info@foodwud.com' },
+        { text: 'www.foodwud.com', href: 'https://www.foodwud.com' },
+      ],
     },
     {
       icon: (
@@ -51,7 +58,7 @@ export default function ContactSection() {
         </svg>
       ),
       label: 'Working Hours',
-      value: 'Mon – Sat: 9:00 AM – 6:00 PM',
+      lines: [{ text: 'Mon – Sat: 9:00 AM – 6:00 PM' }],
     },
   ]
 
@@ -107,15 +114,47 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">{item.label}</p>
-                  <p className="text-white/75 text-sm leading-relaxed whitespace-pre-line">{item.value}</p>
+                  {item.lines.map((line) =>
+                    line.href ? (
+                      <a
+                        key={line.text}
+                        href={line.href}
+                        className="block text-white/75 hover:text-[#c9a227] text-sm leading-relaxed transition-colors"
+                      >
+                        {line.text}
+                      </a>
+                    ) : (
+                      <p key={line.text} className="text-white/75 text-sm leading-relaxed whitespace-pre-line">
+                        {line.text}
+                      </p>
+                    )
+                  )}
                 </div>
               </motion.div>
             ))}
 
-            {/* GST Number */}
-            <div className="p-5 rounded-2xl bg-[#c9a227]/10 border border-[#c9a227]/20">
-              <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">GST Number</p>
-              <p className="text-white/75 text-sm font-mono">19AAGCF7122F1ZP</p>
+            {/* Registrations & Certifications */}
+            <div className="p-5 rounded-2xl bg-[#c9a227]/10 border border-[#c9a227]/20 space-y-4">
+              <div>
+                <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">GST Number</p>
+                <p className="text-white/75 text-sm font-mono">19AAGCF7122F1ZP</p>
+              </div>
+              <div>
+                <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">ISO Certified</p>
+                <p className="text-white/75 text-sm font-mono">9001:2015</p>
+              </div>
+              <div>
+                <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">FSSAI Licence</p>
+                <p className="text-white/75 text-sm font-mono">22826080000524</p>
+              </div>
+            </div>
+
+            {/* Distributor CTA */}
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <p className="text-white font-semibold text-sm mb-1">Become Our Distributor Today!</p>
+              <p className="text-white/60 text-xs leading-relaxed">
+                Partner with Foodwud and grow together. Share your territory and requirement in the form and our team will connect with you.
+              </p>
             </div>
           </motion.div>
 

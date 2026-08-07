@@ -5,10 +5,10 @@ import { motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
 const stats = [
-  { value: '100%', label: 'Natural Ingredients' },
-  { value: '50+', label: 'Premium SKUs' },
-  { value: '5+', label: 'Years of Excellence' },
-  { value: '10K+', label: 'Happy Customers' },
+  { value: '100%', label: 'Trusted Quality' },
+  { value: '4', label: 'Product Lines' },
+  { value: 'ISO', label: 'Certified 9001:2015' },
+  { value: 'FSSAI', label: 'Licensed & Compliant' },
 ]
 
 const values = ['Quality', 'Trust', 'Integrity', 'Innovation', 'Food Safety', 'Sustainability']
@@ -99,16 +99,15 @@ export default function AboutSection() {
             </h3>
 
             <p className="text-[#4a6650] text-base leading-relaxed">
-              Foodwud Pvt. Ltd. is an emerging FMCG company bringing you high-quality, safe, and
-              great-tasting products inspired by the pristine purity of Darjeeling. We are dedicated
-              to delivering freshness, quality, and value through innovative packaging, stringent
-              quality control, and customer-focused products.
+              Foodwud Private Limited is an emerging FMCG company committed to delivering
+              premium-quality food products to households across India. Our products are carefully
+              sourced, hygienically processed, and packaged using modern quality standards to ensure
+              freshness, purity, and customer satisfaction.
             </p>
 
             <p className="text-[#4a6650] text-base leading-relaxed">
-              Every product carrying the Foodwud name reflects our commitment to excellence,
-              consistency, and customer satisfaction — building long-term relationships with
-              consumers, distributors, retailers, and business partners.
+              We believe that quality, affordability, and trust are the foundation of every
+              successful brand — and that good food builds good life.
             </p>
 
             {/* Mission & Vision Pills */}
@@ -123,7 +122,7 @@ export default function AboutSection() {
                   <span className="text-[#1a5c2a] font-semibold text-sm">Our Mission</span>
                 </div>
                 <p className="text-[#0d3d1a] text-xs leading-relaxed">
-                  Deliver fresh, safe, and quality food products through innovative packaging and trusted branding.
+                  To provide high-quality FMCG products that enrich everyday life while maintaining the highest standards of quality, hygiene, and customer satisfaction.
                 </p>
               </div>
               <div className="bg-[#fdf8e1] rounded-2xl p-5 border border-[#e6d98a]">
@@ -136,7 +135,7 @@ export default function AboutSection() {
                   <span className="text-[#8b6914] font-semibold text-sm">Our Vision</span>
                 </div>
                 <p className="text-[#5a4400] text-xs leading-relaxed">
-                  To be a preferred global food brand known for quality, trust, innovation, and sustainable growth.
+                  To become one of India&apos;s most trusted FMCG brands by delivering excellence in every product we offer.
                 </p>
               </div>
             </div>
