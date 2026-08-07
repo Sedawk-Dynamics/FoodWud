@@ -1,12 +1,11 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 
 type Variant = {
   size: string
-  price?: string
   note?: string
   premium?: boolean
 }
@@ -17,7 +16,7 @@ type Product = {
   category: string
   tagline: string
   desc: string
-  image: string
+  images: string[]
   alt: string
   status: 'available' | 'coming-soon'
   variants: Variant[]
@@ -33,7 +32,7 @@ const products: Product[] = [
     category: 'Tea',
     tagline: 'Every Sip, Pure Satisfaction',
     desc: 'Experience the rich aroma and balanced flavour of our premium Assam and Darjeeling tea blend, carefully selected and hygienically packed to bring freshness and quality to every cup.',
-    image: '/images/product-tea.png',
+    images: ['/tea/upton-tea-1.jpeg', '/tea/upton-tea-2.jpeg', '/tea/upton-tea-3.jpeg'],
     alt: 'Upton Tea premium Assam CTC tea packs',
     status: 'available',
     variantLabel: 'Available Variants',
@@ -60,21 +59,21 @@ const products: Product[] = [
     name: 'Premium Fox Nuts',
     category: 'Makhana',
     tagline: 'Flavoured Nutrients, Classic Crunch',
-    desc: 'Hand-picked premium makhana, classic roasted for a light, crisp bite. A naturally gluten-free, protein-rich snack that fits every moment of the day — packed hygienically to lock in the crunch.',
-    image: '/images/product-foxnuts.png',
+    desc: 'Hand-picked premium makhana, classic roasted for a light, crisp bite. A naturally gluten-free, protein-rich snack that fits every moment of the day.',
+    images: ['/images/product-foxnuts.png'],
     alt: 'Foodwud premium roasted fox nuts (makhana)',
-    status: 'available',
-    variantLabel: 'Available Range',
+    status: 'coming-soon',
+    variantLabel: 'Range at Launch',
     variants: [
       { size: 'Classic Roasted', note: 'Lightly roasted, everyday snack' },
       { size: 'Flavoured', note: 'Flavoured nutrients range' },
     ],
-    highlights: ['Classic Roasted', 'Flavoured Nutrients', 'Gluten Free', 'High Protein', 'No Preservatives'],
+    highlights: ['Classic Roasted', 'Flavoured Nutrients', 'Gluten Free', 'High Protein'],
     details: [
+      { label: 'Status', value: 'Launching soon' },
       { label: 'Type', value: 'Premium grade fox nuts (makhana)' },
       { label: 'Processing', value: 'Classic roasted, hygienically packed' },
       { label: 'Nutrition', value: 'High protein, gluten free, low fat' },
-      { label: 'Best For', value: 'Everyday snacking and fasting diets' },
     ],
   },
   {
@@ -82,21 +81,21 @@ const products: Product[] = [
     name: 'Premium Mustard Oil',
     category: 'Edible Oil',
     tagline: 'Pure Ingredients. Pure Promise.',
-    desc: 'Cold pressed kachi ghani mustard oil — pure, natural, and full-bodied. Extracted the traditional way to retain the natural pungency, aroma, and nutrients that Indian kitchens have trusted for generations.',
-    image: '/images/products-spread.png',
+    desc: 'Cold pressed kachi ghani mustard oil — pure, natural, and full-bodied. Extracted the traditional way to retain natural pungency, aroma, and nutrients.',
+    images: ['/images/products-spread.png'],
     alt: 'Foodwud premium cold pressed kachi ghani mustard oil',
-    status: 'available',
-    variantLabel: 'Product Highlights',
+    status: 'coming-soon',
+    variantLabel: 'Range at Launch',
     variants: [
       { size: 'Cold Pressed', note: 'Traditional kachi ghani extraction' },
       { size: 'Pure & Natural', note: 'No blending, no additives' },
     ],
-    highlights: ['Cold Pressed Kachi Ghani', 'Pure & Natural', 'Traditional Aroma', 'Hygienically Packed'],
+    highlights: ['Cold Pressed Kachi Ghani', 'Pure & Natural', 'Traditional Aroma'],
     details: [
+      { label: 'Status', value: 'Launching soon' },
       { label: 'Extraction', value: 'Cold pressed kachi ghani' },
       { label: 'Purity', value: '100% pure mustard oil, unblended' },
-      { label: 'Use', value: 'Cooking, tempering, pickling, massage' },
-      { label: 'Packaging', value: 'Food-grade sealed packs' },
+      { label: 'Use', value: 'Cooking, tempering, pickling' },
     ],
   },
   {
@@ -104,11 +103,11 @@ const products: Product[] = [
     name: 'Foodwud Spice Range',
     category: 'Spices',
     tagline: 'Quality You Can Taste. Trust You Can Relish.',
-    desc: 'Our upcoming spice range brings authentic Indian kitchen staples — ground and blended for consistent colour, aroma, and flavour, with zero adulteration and hygienic packaging.',
-    image: '/images/product-spices.png',
+    desc: 'Six authentic Indian kitchen staples — ground and blended for consistent colour, aroma, and flavour, with zero adulteration and hygienic packaging.',
+    images: ['/images/product-spices.png'],
     alt: 'Foodwud spice range — turmeric, chilli, coriander and masala blends',
     status: 'coming-soon',
-    variantLabel: 'Range (Coming Soon)',
+    variantLabel: 'Range at Launch',
     variants: [
       { size: 'Turmeric Powder' },
       { size: 'Red Chilli Powder' },
@@ -117,7 +116,7 @@ const products: Product[] = [
       { size: 'Garam Masala' },
       { size: 'Kitchen King Masala' },
     ],
-    highlights: ['Zero Adulteration', 'Consistent Colour', 'Fresh Ground', 'Hygienically Packed'],
+    highlights: ['Zero Adulteration', 'Consistent Colour', 'Fresh Ground'],
     details: [
       { label: 'Status', value: 'Launching soon' },
       { label: 'Range', value: '6 kitchen staples at launch' },
@@ -127,19 +126,226 @@ const products: Product[] = [
   },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+const featured = products.find((p) => p.status === 'available')!
+const upcoming = products.filter((p) => p.status === 'coming-soon')
+
+const scrollToContact = () =>
+  document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+
+/* ------------------------------- Carousel ------------------------------- */
+
+function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const multiple = images.length > 1
+
+  const go = useCallback(
+    (next: number) => setIndex((next + images.length) % images.length),
+    [images.length]
+  )
+
+  useEffect(() => {
+    if (!multiple || paused) return
+    const timer = setInterval(() => setIndex((i) => (i + 1) % images.length), 4500)
+    return () => clearInterval(timer)
+  }, [multiple, paused, images.length])
+
+  return (
+    <div
+      className="relative h-full w-full min-h-[440px] sm:min-h-[560px] lg:min-h-[680px] overflow-hidden rounded-3xl"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <AnimatePresence initial={false} mode="popLayout">
+        <motion.div
+          key={images[index]}
+          initial={{ opacity: 0, scale: 1.06 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={images[index]}
+            alt={alt}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            priority={index === 0}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0d3d1a]/50 via-transparent to-transparent pointer-events-none" />
+
+      {multiple && (
+        <>
+          <button
+            onClick={() => go(index - 1)}
+            aria-label="Previous image"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-[#c9a227] hover:text-[#0d3d1a] transition-colors duration-300 cursor-pointer"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            onClick={() => go(index + 1)}
+            aria-label="Next image"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-[#c9a227] hover:text-[#0d3d1a] transition-colors duration-300 cursor-pointer"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2">
+            {images.map((img, i) => (
+              <button
+                key={img}
+                onClick={() => go(i)}
+                aria-label={`Go to image ${i + 1}`}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  i === index ? 'w-7 bg-[#c9a227]' : 'w-2 bg-white/50 hover:bg-white/80'
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
-const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
+
+/* ------------------------------ Coming Soon ----------------------------- */
+
+function UpcomingCard({ product, delay }: { product: Product; delay: number }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as const }}
+      className="group flex flex-col rounded-3xl bg-white/[0.04] border border-white/10 overflow-hidden hover:border-[#c9a227]/40 transition-colors duration-500"
+    >
+      {/* Image */}
+      <div className="relative aspect-[4/5] min-h-[340px] overflow-hidden">
+        <Image
+          src={product.images[0]}
+          alt={product.alt}
+          fill
+          className="object-cover saturate-[0.7] group-hover:saturate-100 group-hover:scale-105 transition-all duration-700"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-[#0d3d1a]/40 group-hover:bg-[#0d3d1a]/20 transition-colors duration-500" />
+
+        {/* Coming Soon ribbon */}
+        <div className="absolute top-4 right-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] bg-[#c9a227] text-[#0d3d1a] shadow-lg">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0d3d1a] animate-pulse" />
+            Coming Soon
+          </span>
+        </div>
+        <div className="absolute top-4 left-4">
+          <span className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] bg-black/40 backdrop-blur-sm text-white/90 border border-white/20">
+            {product.category}
+          </span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-6">
+        <p className="text-[#c9a227] text-[10px] font-bold tracking-[0.16em] uppercase mb-2">
+          {product.tagline}
+        </p>
+        <h3 className="font-serif text-xl text-white mb-2.5">{product.name}</h3>
+        <p className="text-white/55 text-sm leading-relaxed mb-5">{product.desc}</p>
+
+        <p className="text-white/35 text-[10px] font-semibold uppercase tracking-wider mb-2.5">
+          {product.variantLabel}
+        </p>
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {product.variants.map((v) => (
+            <span
+              key={v.size}
+              title={v.note}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/5 border border-white/10 text-white/80"
+            >
+              {v.size}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {product.highlights.map((h) => (
+            <span
+              key={h}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium bg-[#c9a227]/10 text-[#e6c45a] border border-[#c9a227]/20"
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              {h}
+            </span>
+          ))}
+        </div>
+
+        {open && (
+          <motion.dl
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
+            className="grid gap-3 mb-5 pt-4 border-t border-white/10 overflow-hidden"
+          >
+            {product.details.map((d) => (
+              <div key={d.label} className="flex gap-3">
+                <dt className="text-[#c9a227] text-[10px] font-semibold uppercase tracking-wide w-24 flex-shrink-0 pt-0.5">
+                  {d.label}
+                </dt>
+                <dd className="text-white/65 text-xs leading-relaxed">{d.value}</dd>
+              </div>
+            ))}
+          </motion.dl>
+        )}
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-2">
+          <button
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            className="inline-flex items-center gap-1.5 text-[#c9a227] text-[11px] font-semibold uppercase tracking-wider hover:text-[#e6c45a] transition-colors cursor-pointer"
+          >
+            {open ? 'Less' : 'Details'}
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <button
+            onClick={scrollToContact}
+            className="px-4 py-2 rounded-full text-[11px] font-semibold border border-white/15 text-white/70 hover:bg-[#c9a227] hover:text-[#0d3d1a] hover:border-[#c9a227] transition-all duration-300 cursor-pointer"
+          >
+            Notify Me
+          </button>
+        </div>
+      </div>
+    </motion.article>
+  )
 }
+
+/* -------------------------------- Section ------------------------------- */
 
 export default function ProductsSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
-  const [expanded, setExpanded] = useState<string | null>('upton-tea')
 
   return (
     <section id="products" ref={ref} className="py-24 lg:py-32 bg-[#0d3d1a] relative overflow-hidden">
@@ -176,146 +382,139 @@ export default function ProductsSection() {
             Goodness for <span className="shimmer-text">Every Moment</span>
           </h2>
           <p className="text-white/60 text-base max-w-2xl mx-auto leading-relaxed">
-            Delivering Purity. Packaging Trust. Serving Every Home. Explore our range with full pack sizes, variants, and pricing.
+            Delivering Purity. Packaging Trust. Serving Every Home.
           </p>
         </motion.div>
 
-        {/* Products */}
+        {/* ----------------------- Featured product ----------------------- */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          className="space-y-6"
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
+          className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center mb-24"
         >
-          {products.map((product) => {
-            const isOpen = expanded === product.id
-            return (
-              <motion.article
-                key={product.id}
-                variants={cardVariants}
-                className="overflow-hidden rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm"
-              >
-                <div className="grid lg:grid-cols-5">
-                  {/* Image */}
-                  <div className="relative h-64 lg:h-auto lg:col-span-2 min-h-[280px]">
-                    <Image
-                      src={product.image}
-                      alt={product.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 40vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d3d1a]/70 to-transparent lg:bg-gradient-to-r" />
-                    <div className="absolute top-5 left-5 flex flex-wrap gap-2">
-                      <span className="px-3 py-1.5 rounded-full text-[11px] font-bold bg-[#c9a227] text-[#0d3d1a] uppercase tracking-wide">
-                        {product.category}
-                      </span>
-                      {product.status === 'coming-soon' && (
-                        <span className="px-3 py-1.5 rounded-full text-[11px] font-bold bg-white/90 text-[#0d3d1a] uppercase tracking-wide">
-                          Coming Soon
-                        </span>
-                      )}
-                    </div>
-                  </div>
+          {/* Carousel */}
+          <div className="relative">
+            <ProductGallery images={featured.images} alt={featured.alt} />
+            <div className="absolute top-5 left-5 z-10 flex flex-wrap gap-2">
+              <span className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] bg-[#c9a227] text-[#0d3d1a] shadow-lg">
+                {featured.category}
+              </span>
+              <span className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] bg-white text-[#0d3d1a] shadow-lg">
+                Available Now
+              </span>
+            </div>
+          </div>
 
-                  {/* Content */}
-                  <div className="lg:col-span-3 p-7 lg:p-10">
-                    <p className="text-[#c9a227] text-[11px] font-bold tracking-[0.2em] uppercase mb-2">
-                      {product.tagline}
-                    </p>
-                    <h3 className="font-serif text-2xl md:text-3xl text-white mb-3">{product.name}</h3>
-                    <p className="text-white/65 text-sm leading-relaxed mb-6">{product.desc}</p>
+          {/* Details */}
+          <div>
+            <p className="text-[#c9a227] text-[11px] font-bold tracking-[0.2em] uppercase mb-3">
+              {featured.tagline}
+            </p>
+            <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white mb-4">{featured.name}</h3>
+            <p className="text-white/65 text-base leading-relaxed mb-8">{featured.desc}</p>
 
-                    {/* Variants & pricing */}
-                    <p className="text-white/40 text-[11px] font-semibold uppercase tracking-wider mb-3">
-                      {product.variantLabel}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {product.variants.map((variant) => (
-                        <div
-                          key={variant.size}
-                          title={variant.note}
-                          className={`px-4 py-2.5 rounded-xl border text-center transition-colors duration-300 ${
-                            variant.premium
-                              ? 'bg-[#c9a227]/15 border-[#c9a227]/50'
-                              : 'bg-white/5 border-white/15 hover:border-[#c9a227]/50'
-                          }`}
-                        >
-                          <p className="text-white text-sm font-semibold leading-tight">{variant.size}</p>
-                          {variant.premium && (
-                            <p className="text-[#c9a227] text-[10px] font-bold uppercase tracking-wider mt-0.5">
-                              Premium
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Highlights */}
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {product.highlights.map((h) => (
-                        <span
-                          key={h}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#c9a227]/10 text-[#e6c45a] border border-[#c9a227]/25"
-                        >
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                          {h}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Detail toggle */}
-                    <button
-                      onClick={() => setExpanded(isOpen ? null : product.id)}
-                      aria-expanded={isOpen}
-                      className="mt-5 inline-flex items-center gap-2 text-[#c9a227] text-xs font-semibold uppercase tracking-wider hover:text-[#e6c45a] transition-colors cursor-pointer"
-                    >
-                      {isOpen ? 'Hide Details' : 'View Full Details'}
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-                      >
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </button>
-
-                    {isOpen && (
-                      <motion.dl
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                        className="mt-5 grid sm:grid-cols-2 gap-4 pt-5 border-t border-white/10 overflow-hidden"
-                      >
-                        {product.details.map((d) => (
-                          <div key={d.label}>
-                            <dt className="text-[#c9a227] text-[11px] font-semibold uppercase tracking-wide mb-1">
-                              {d.label}
-                            </dt>
-                            <dd className="text-white/70 text-sm leading-relaxed">{d.value}</dd>
-                          </div>
-                        ))}
-                      </motion.dl>
-                    )}
-                  </div>
+            {/* Pricing grid */}
+            <p className="text-white/35 text-[11px] font-semibold uppercase tracking-wider mb-3">
+              {featured.variantLabel}
+            </p>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 mb-8">
+              {featured.variants.map((v) => (
+                <div
+                  key={v.size}
+                  title={v.note}
+                  className={`px-3 py-3 rounded-xl border text-center transition-all duration-300 hover:-translate-y-0.5 ${
+                    v.premium
+                      ? 'bg-[#c9a227]/15 border-[#c9a227]/50'
+                      : 'bg-white/5 border-white/12 hover:border-[#c9a227]/50'
+                  }`}
+                >
+                  <p className="text-white text-sm font-semibold leading-tight">{v.size}</p>
+                  {v.premium && (
+                    <p className="text-[#c9a227] text-[9px] font-bold uppercase tracking-wider mt-1">Premium</p>
+                  )}
                 </div>
-              </motion.article>
-            )
-          })}
+              ))}
+            </div>
+
+            {/* Highlights */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {featured.highlights.map((h) => (
+                <span
+                  key={h}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-[#c9a227]/10 text-[#e6c45a] border border-[#c9a227]/25"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  {h}
+                </span>
+              ))}
+            </div>
+
+            {/* Spec table */}
+            <dl className="grid sm:grid-cols-2 gap-x-8 gap-y-4 pt-6 border-t border-white/10 mb-8">
+              {featured.details.map((d) => (
+                <div key={d.label}>
+                  <dt className="text-[#c9a227] text-[10px] font-semibold uppercase tracking-wide mb-1">
+                    {d.label}
+                  </dt>
+                  <dd className="text-white/70 text-sm leading-relaxed">{d.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <motion.button
+              onClick={scrollToContact}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-3 bg-[#c9a227] text-[#0d3d1a] px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-[#e6c45a] transition-colors duration-300 cursor-pointer"
+            >
+              Enquire About Upton Tea
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </motion.button>
+          </div>
         </motion.div>
 
-        {/* Quality Assurance */}
+        {/* ------------------------ Coming soon grid ---------------------- */}
+        <div className="mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-6 border-b border-white/10"
+          >
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#c9a227] animate-pulse" />
+                <span className="text-[#c9a227] text-[11px] font-bold tracking-[0.2em] uppercase">
+                  Launching Soon
+                </span>
+              </div>
+              <h3 className="font-serif text-2xl md:text-3xl text-white">The Range Ahead</h3>
+            </div>
+            <p className="text-white/50 text-sm max-w-md sm:text-right leading-relaxed">
+              Three new lines are on their way. Register your interest now and we will reach out the moment they launch.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {upcoming.map((product, i) => (
+              <UpcomingCard key={product.id} product={product} delay={i * 0.12} />
+            ))}
+          </div>
+        </div>
+
+        {/* ------------------------ Quality assurance --------------------- */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-16 rounded-3xl bg-[#c9a227]/10 border border-[#c9a227]/25 p-8 lg:p-10"
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7 }}
+          className="rounded-3xl bg-[#c9a227]/10 border border-[#c9a227]/25 p-8 lg:p-10"
         >
           <div className="text-center mb-8">
             <h3 className="font-serif text-2xl md:text-3xl text-white mb-2">Quality Assurance</h3>
@@ -343,12 +542,13 @@ export default function ProductsSection() {
         {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
           className="text-center mt-12"
         >
           <motion.button
-            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={scrollToContact}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-3 border border-[#c9a227] text-[#c9a227] hover:bg-[#c9a227] hover:text-[#0d3d1a] px-8 py-3.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer"
