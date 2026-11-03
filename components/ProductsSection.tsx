@@ -25,35 +25,85 @@ type Product = {
   details: { label: string; value: string }[]
 }
 
+type Pack = {
+  size: string
+  price: string
+}
+
+type TeaRange = {
+  label: string
+  name: string
+  tagline: string
+  image: string
+  alt: string
+  premium?: boolean
+  packs: Pack[]
+}
+
+const featured = {
+  name: 'Upton Tea',
+  category: 'Tea',
+  tagline: 'Every Sip, Pure Satisfaction',
+  desc: 'Experience the rich aroma and balanced flavour of our premium Assam and Darjeeling tea blend, carefully selected and hygienically packed to bring freshness and quality to every cup.',
+  ranges: [
+    {
+      label: 'Pouch',
+      name: 'Upton Tea',
+      tagline: 'Premium Blended Tea',
+      image: '/products/upton-tea-pouch.jpeg',
+      alt: 'Upton Tea premium blended tea pouch',
+      packs: [
+        { size: 'Sachet', price: '₹5' },
+        { size: 'Sachet', price: '₹10' },
+        { size: '50g', price: '₹26' },
+        { size: '100g', price: '₹52' },
+      ],
+    },
+    {
+      label: 'Gold',
+      name: 'Upton Tea Gold',
+      tagline: 'Unfold Perfection',
+      image: '/products/upton-tea-gold.jpeg',
+      alt: 'Upton Tea Gold 250g pouch',
+      packs: [{ size: '250g', price: '₹127' }],
+    },
+    {
+      label: 'Jar Premium',
+      name: 'Upton Tea Jar Premium',
+      tagline: 'CTC Black Tea · Strong, Aromatic, Refreshing',
+      image: '/products/upton-tea-jar-premium.jpeg',
+      alt: 'Upton Tea Premium CTC black tea jar',
+      packs: [
+        { size: '250g', price: '₹95' },
+        { size: '500g', price: '₹190' },
+        { size: '1kg', price: '₹380' },
+        { size: '3kg', price: '₹1120' },
+      ],
+    },
+    {
+      label: 'Jar Platinum',
+      name: 'Upton Tea Jar Platinum',
+      tagline: 'Pure Taste · Natural Goodness',
+      image: '/products/upton-tea-jar-platinum.jpeg',
+      alt: 'Upton Tea Platinum jar',
+      premium: true,
+      packs: [
+        { size: '250g', price: '₹118' },
+        { size: '500g', price: '₹236' },
+        { size: '1kg', price: '₹472' },
+      ],
+    },
+  ] satisfies TeaRange[],
+  highlights: ['Rich Aroma', 'Strong Colour', 'Refreshing Taste', 'Hygienically Packed', 'Excellent Value for Money'],
+  details: [
+    { label: 'Blend', value: 'Premium Assam & Darjeeling' },
+    { label: 'Range', value: 'Pouch, Gold, Jar Premium, Jar Platinum' },
+    { label: 'Sachets & Pouches', value: '₹5 and ₹10 sachets, 50g, 100g, 250g' },
+    { label: 'Jars', value: '250g, 500g, 1kg, 3kg' },
+  ],
+}
+
 const products: Product[] = [
-  {
-    id: 'upton-tea',
-    name: 'Upton Tea',
-    category: 'Tea',
-    tagline: 'Every Sip, Pure Satisfaction',
-    desc: 'Experience the rich aroma and balanced flavour of our premium Assam and Darjeeling tea blend, carefully selected and hygienically packed to bring freshness and quality to every cup.',
-    images: ['/tea/upton-tea-1.jpeg', '/tea/upton-tea-2.jpeg', '/tea/upton-tea-3.jpeg'],
-    alt: 'Upton Tea premium Assam CTC tea packs',
-    status: 'available',
-    variantLabel: 'Available Variants',
-    variants: [
-      { size: '₹5 Pack', note: 'Premium Assam CTC' },
-      { size: '₹10 Pack', note: 'Premium Assam CTC' },
-      { size: '₹20 Pack', note: 'Premium Assam CTC' },
-      { size: '50g Pack', note: 'Premium Assam Tea Leaves' },
-      { size: '100g Pack', note: 'Premium Assam Tea Leaves' },
-      { size: '250g Pack', note: 'Premium Assam Tea Leaves' },
-      { size: '1kg Pack', note: 'Premium Assam Tea Leaves', premium: true },
-      { size: '3kg Pack', note: 'Premium Assam Tea Leaves', premium: true },
-    ],
-    highlights: ['Rich Aroma', 'Strong Colour', 'Refreshing Taste', 'Hygienically Packed', 'Excellent Value for Money'],
-    details: [
-      { label: 'Blend', value: 'Premium Assam & Darjeeling' },
-      { label: 'Grade', value: 'Assam CTC and whole leaf' },
-      { label: 'Price Packs', value: '₹5, ₹10 and ₹20 sachets' },
-      { label: 'Weight Packs', value: '50g, 100g, 250g, 1kg, 3kg' },
-    ],
-  },
   {
     id: 'fox-nuts',
     name: 'Premium Fox Nuts',
@@ -126,7 +176,6 @@ const products: Product[] = [
   },
 ]
 
-const featured = products.find((p) => p.status === 'available')!
 const upcoming = products.filter((p) => p.status === 'coming-soon')
 
 const scrollToContact = () =>
@@ -134,21 +183,27 @@ const scrollToContact = () =>
 
 /* ------------------------------- Carousel ------------------------------- */
 
-function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
-  const [index, setIndex] = useState(0)
+function ProductGallery({
+  slides,
+  index,
+  onSelect,
+  autoplay,
+}: {
+  slides: { image: string; alt: string }[]
+  index: number
+  onSelect: (index: number, manual: boolean) => void
+  autoplay: boolean
+}) {
   const [paused, setPaused] = useState(false)
-  const multiple = images.length > 1
+  const multiple = slides.length > 1
 
-  const go = useCallback(
-    (next: number) => setIndex((next + images.length) % images.length),
-    [images.length]
-  )
+  const go = (next: number) => onSelect((next + slides.length) % slides.length, true)
 
   useEffect(() => {
-    if (!multiple || paused) return
-    const timer = setInterval(() => setIndex((i) => (i + 1) % images.length), 4500)
-    return () => clearInterval(timer)
-  }, [multiple, paused, images.length])
+    if (!multiple || paused || !autoplay) return
+    const timer = setTimeout(() => onSelect((index + 1) % slides.length, false), 4500)
+    return () => clearTimeout(timer)
+  }, [multiple, paused, autoplay, index, slides.length, onSelect])
 
   return (
     <div
@@ -158,7 +213,7 @@ function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
     >
       <AnimatePresence initial={false} mode="popLayout">
         <motion.div
-          key={images[index]}
+          key={slides[index].image}
           initial={{ opacity: 0, scale: 1.06 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
@@ -166,8 +221,8 @@ function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
           className="absolute inset-0"
         >
           <Image
-            src={images[index]}
-            alt={alt}
+            src={slides[index].image}
+            alt={slides[index].alt}
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -200,9 +255,9 @@ function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
           </button>
 
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2">
-            {images.map((img, i) => (
+            {slides.map((slide, i) => (
               <button
-                key={img}
+                key={slide.image}
                 onClick={() => go(i)}
                 aria-label={`Go to image ${i + 1}`}
                 className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
@@ -346,6 +401,15 @@ function UpcomingCard({ product, delay }: { product: Product; delay: number }) {
 export default function ProductsSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
+  const [rangeIndex, setRangeIndex] = useState(0)
+  const [autoplay, setAutoplay] = useState(true)
+  const activeRange = featured.ranges[rangeIndex]
+
+  // Once the visitor picks a range themselves, stop rotating so the prices don't change under them
+  const selectRange = useCallback((i: number, manual: boolean) => {
+    setRangeIndex(i)
+    if (manual) setAutoplay(false)
+  }, [])
 
   return (
     <section id="products" ref={ref} className="py-24 lg:py-32 bg-[#0d3d1a] relative overflow-hidden">
@@ -395,7 +459,12 @@ export default function ProductsSection() {
         >
           {/* Carousel */}
           <div className="relative">
-            <ProductGallery images={featured.images} alt={featured.alt} />
+            <ProductGallery
+              slides={featured.ranges}
+              index={rangeIndex}
+              onSelect={selectRange}
+              autoplay={autoplay}
+            />
             <div className="absolute top-5 left-5 z-10 flex flex-wrap gap-2">
               <span className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] bg-[#c9a227] text-[#0d3d1a] shadow-lg">
                 {featured.category}
@@ -414,28 +483,62 @@ export default function ProductsSection() {
             <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-white mb-4">{featured.name}</h3>
             <p className="text-white/65 text-base leading-relaxed mb-8">{featured.desc}</p>
 
-            {/* Pricing grid */}
+            {/* Range selector */}
             <p className="text-white/35 text-[11px] font-semibold uppercase tracking-wider mb-3">
-              {featured.variantLabel}
+              Choose Your Range
             </p>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 mb-8">
-              {featured.variants.map((v) => (
-                <div
-                  key={v.size}
-                  title={v.note}
-                  className={`px-3 py-3 rounded-xl border text-center transition-all duration-300 hover:-translate-y-0.5 ${
-                    v.premium
-                      ? 'bg-[#c9a227]/15 border-[#c9a227]/50'
-                      : 'bg-white/5 border-white/12 hover:border-[#c9a227]/50'
+            <div className="flex flex-wrap gap-2 mb-5">
+              {featured.ranges.map((range, i) => (
+                <button
+                  key={range.label}
+                  onClick={() => selectRange(i, true)}
+                  aria-pressed={i === rangeIndex}
+                  className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all duration-300 cursor-pointer ${
+                    i === rangeIndex
+                      ? 'bg-[#c9a227] text-[#0d3d1a] border-[#c9a227]'
+                      : 'bg-white/5 text-white/75 border-white/15 hover:border-[#c9a227]/50 hover:text-white'
                   }`}
                 >
-                  <p className="text-white text-sm font-semibold leading-tight">{v.size}</p>
-                  {v.premium && (
-                    <p className="text-[#c9a227] text-[9px] font-bold uppercase tracking-wider mt-1">Premium</p>
-                  )}
-                </div>
+                  {range.label}
+                </button>
               ))}
             </div>
+
+            {/* Pricing grid */}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={activeRange.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8"
+              >
+                <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-3">
+                  <p className="text-white font-semibold text-base">{activeRange.name}</p>
+                  <p className="text-[#c9a227] text-[10px] font-bold uppercase tracking-[0.14em]">
+                    {activeRange.tagline}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {activeRange.packs.map((pack) => (
+                    <div
+                      key={`${pack.size}-${pack.price}`}
+                      className={`px-3 py-3 rounded-xl border text-center transition-all duration-300 hover:-translate-y-0.5 ${
+                        activeRange.premium
+                          ? 'bg-[#c9a227]/15 border-[#c9a227]/50'
+                          : 'bg-white/5 border-white/12 hover:border-[#c9a227]/50'
+                      }`}
+                    >
+                      <p className="text-white text-lg font-semibold leading-tight">{pack.price}</p>
+                      <p className="text-white/55 text-[11px] font-medium uppercase tracking-wider mt-1">
+                        {pack.size}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
 
             {/* Highlights */}
             <div className="flex flex-wrap gap-2 mb-8">

@@ -9,7 +9,7 @@ const brands = [
     id: 'upton-tea',
     name: 'Upton Tea',
     tagline: 'Every Sip, Pure Satisfaction',
-    desc: 'Our flagship tea brand — a premium Assam and Darjeeling blend, carefully selected and hygienically packed to bring freshness and quality to every cup. Available as ₹5, ₹10 and ₹20 CTC packs, and as 50g, 100g, 250g, 1kg and 3kg premium leaf packs.',
+    desc: 'Our flagship tea brand — a premium Assam and Darjeeling blend, carefully selected and hygienically packed to bring freshness and quality to every cup. Available as ₹5 and ₹10 sachets, 50g and 100g pouches, Upton Tea Gold 250g, and Jar Premium and Jar Platinum from 250g to 3kg.',
     image: '/images/brand-upton-tea.png',
     color: '#0d3d1a',
     accent: '#c9a227',
