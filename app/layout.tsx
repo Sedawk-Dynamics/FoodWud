@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     'Foodwud Pvt. Ltd. is a premium FMCG company from Darjeeling, West Bengal, delivering safe, hygienic, and high-quality food products — Tea, Spices, Fox Nuts, Honey and more.',
   keywords: 'Foodwud, FMCG, Darjeeling tea, spices, fox nuts, honey, premium food, natural food',
   authors: [{ name: 'Foodwud Private Limited' }],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/icon-light-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-192.png', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
   openGraph: {
     title: 'Foodwud Private Limited',
     description: 'Pure by Nature. Trusted for Generations.',

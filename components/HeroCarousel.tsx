@@ -7,45 +7,30 @@ import Image from 'next/image'
 
 const slides = [
   {
-    id: 1,
-    image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Hero%20Section%20design%201.png-5pscoZX0y2aGA8W5hvMsdJYc8XyK1Z.jpeg',
-    tag: 'PURE IN EVERY LEAF',
-    headline: ['Tea, Made Simple.', 'Naturally Better.'],
-    description: 'Thoughtfully selected tea leaves crafted for a smooth, refreshing cup every day.',
-    cta: 'Explore Collection',
-    badges: ['100% Natural', 'Carefully Sourced', 'Rich Aroma'],
-    accentColor: '#1a5c2a',
+    "id": 5,
+    "image": "/images/hero/05-group-hero-banner.png",
+    "alt": "Upton Tea collection - Better Leaves. Better Every Day."
   },
   {
-    id: 2,
-    image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Hero%20Section%20design%202.png-CY6ZfB5JHnhjYFPiSt4AeALRjyDglA.jpeg',
-    tag: 'NATURE\'S FINEST',
-    headline: ["Nature's Finest.", 'Perfectly Crafted.'],
-    description: 'From the misty highlands to your cup, experience tea in its purest, most authentic form.',
-    cta: 'Explore Collection',
-    badges: ['100% Natural', 'Carefully Sourced', 'Rich Aroma'],
-    accentColor: '#c9a227',
+    "id": 1,
+    "image": "/images/hero/03-premium-pouch.png",
+    "alt": "Upton Premium Blended Tea ? Better Tea. Better Every Day."
   },
   {
-    id: 3,
-    image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Hero%20Section%20design%203.png-qvKNSo50t8vVhvWUEaBvKSIdvY89qR.jpeg',
-    tag: 'PURE IN EVERY LEAF',
-    headline: ["Nature's Finest.", 'Perfectly Crafted.'],
-    description: 'From the misty highlands to your cup, experience tea in its purest, most authentic form.',
-    cta: 'Explore Collection',
-    badges: ['100% Natural', 'Carefully Sourced', 'Rich Aroma'],
-    accentColor: '#1a5c2a',
+    "id": 2,
+    "image": "/images/hero/04-platinum-jar.png",
+    "alt": "Upton Tea Platinum ? Pure Taste. Natural Goodness."
   },
   {
-    id: 4,
-    image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Hero%20Section%20design%204.png-hnGaX73HTkB9KUAdgsypd4d2W9Em18.jpeg',
-    tag: 'REAL LEAVES. REAL GOODNESS.',
-    headline: ['Better Leaves.', 'Better Every Day.'],
-    description: 'Made from carefully picked tea leaves for a naturally refreshing experience.',
-    cta: 'Discover the Difference',
-    badges: ['100% Natural', 'Carefully Sourced', 'Rich Aroma', 'Full of Goodness'],
-    accentColor: '#2e7d32',
+    "id": 3,
+    "image": "/images/hero/01-ctc-jar.png",
+    "alt": "Upton CTC Black Tea ? Every Sip, Pure Satisfaction."
   },
+  {
+    "id": 4,
+    "image": "/images/hero/02-gold-pouch.png",
+    "alt": "Upton Tea Gold ? Unfold Perfection."
+  }
 ]
 
 
@@ -73,7 +58,7 @@ export default function HeroCarousel() {
   return (
     <section
       id="home"
-      className="relative w-full h-screen min-h-[600px] overflow-hidden"
+      className="relative mt-[72px] w-full aspect-[2/1] overflow-hidden scroll-mt-[72px]"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
@@ -88,9 +73,9 @@ export default function HeroCarousel() {
         >
           <Image
             src={s.image}
-            alt={s.headline.join(' ')}
+            alt={s.alt}
             fill
-            className="object-cover object-center"
+            className="object-contain object-center"
             priority={i === 0}
             sizes="100vw"
           />
@@ -100,21 +85,21 @@ export default function HeroCarousel() {
       {/* Navigation Arrows */}
       <button
         onClick={prev}
-        className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#c9a227] hover:border-[#c9a227] transition-all duration-300 cursor-pointer"
+        className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#c9a227] hover:border-[#c9a227] transition-all duration-300 cursor-pointer"
         aria-label="Previous slide"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#c9a227] hover:border-[#c9a227] transition-all duration-300 cursor-pointer"
+        className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#c9a227] hover:border-[#c9a227] transition-all duration-300 cursor-pointer"
         aria-label="Next slide"
       >
         <ChevronRight size={20} />
       </button>
 
       {/* Pagination Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+      <div className="absolute bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
         {slides.map((_, i) => (
           <button
             key={i}
