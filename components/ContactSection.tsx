@@ -34,7 +34,7 @@ export default function ContactSection() {
       ),
       label: 'Phone & WhatsApp',
       lines: [
-        { text: '080 6217 9167', href: 'tel:08062179167' },
+        { text: '1800 889 4762 (Toll Free & WhatsApp)', href: 'tel:18008894762' },
         { text: '+91 90312 32418', href: 'tel:+919031232418' },
         { text: '+91 97092 61965', href: 'tel:+919709261965' },
       ],
@@ -249,6 +249,24 @@ export default function ContactSection() {
             </div>
           </motion.div>
         </div>
+        {/* Google Map */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mt-16 rounded-3xl overflow-hidden border border-white/10 h-[300px] md:h-[400px]"
+        >
+          <iframe
+            title="Foodwud location on Google Maps"
+            src="https://www.google.com/maps?q=Panchkulguri,+Nimai,+Matigara,+Siliguri,+Darjeeling,+West+Bengal+734010&output=embed"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+        </motion.div>
       </div>
     </section>
   )

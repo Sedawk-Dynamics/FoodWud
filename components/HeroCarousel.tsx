@@ -7,30 +7,15 @@ import Image from 'next/image'
 
 const slides = [
   {
-    "id": 5,
-    "image": "/images/hero/05-group-hero-banner.png",
-    "alt": "Upton Tea collection - Better Leaves. Better Every Day."
+    id: 1,
+    image: '/images/hero/hero-banner-1.png',
+    alt: "Upton Tea - Nature's Finest. Perfectly Crafted.",
   },
   {
-    "id": 1,
-    "image": "/images/hero/03-premium-pouch.png",
-    "alt": "Upton Premium Blended Tea ? Better Tea. Better Every Day."
+    id: 2,
+    image: '/images/hero/hero-banner-2.png',
+    alt: 'Upton Tea - Better Leaves. Better Every Day.',
   },
-  {
-    "id": 2,
-    "image": "/images/hero/04-platinum-jar.png",
-    "alt": "Upton Tea Platinum ? Pure Taste. Natural Goodness."
-  },
-  {
-    "id": 3,
-    "image": "/images/hero/01-ctc-jar.png",
-    "alt": "Upton CTC Black Tea ? Every Sip, Pure Satisfaction."
-  },
-  {
-    "id": 4,
-    "image": "/images/hero/02-gold-pouch.png",
-    "alt": "Upton Tea Gold ? Unfold Perfection."
-  }
 ]
 
 
@@ -58,11 +43,11 @@ export default function HeroCarousel() {
   return (
     <section
       id="home"
-      className="relative mt-[72px] w-full aspect-[2/1] overflow-hidden scroll-mt-[72px]"
+      className="relative mt-[72px] w-full aspect-[1900/828] overflow-hidden scroll-mt-[72px]"
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
-      {/* Background Images — all rendered, only current visible */}
+      {/* Background images: all rendered, only current visible */}
       {slides.map((s, i) => (
         <motion.div
           key={s.id}
