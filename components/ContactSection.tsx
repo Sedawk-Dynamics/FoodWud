@@ -258,7 +258,7 @@ export default function ContactSection() {
         >
           <iframe
             title="Foodwud location on Google Maps"
-            src="https://www.google.com/maps?q=Panchkulguri,+Nimai,+Matigara,+Siliguri,+Darjeeling,+West+Bengal+734010&output=embed"
+            src="https://www.google.com/maps?q=26.756463,88.349046&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
