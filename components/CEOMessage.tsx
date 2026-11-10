@@ -41,7 +41,7 @@ export default function CEOMessage() {
             <div className="relative">
               <div className="relative w-64 h-80 lg:w-72 lg:h-96 rounded-3xl overflow-hidden shadow-2xl shadow-green-900/20">
                 <Image
-                  src="/images/ceo-portrait.png"
+                  src="/founder-image.jpeg"
                   alt="Founder and CEO of Foodwud Private Limited"
                   fill
                   className="object-cover object-top"
