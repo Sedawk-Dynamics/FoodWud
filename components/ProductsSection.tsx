@@ -50,7 +50,7 @@ const featured = {
       label: 'Pouch',
       name: 'Upton Tea',
       tagline: 'Premium Blended Tea',
-      image: '/products/upton-tea-pouch.jpeg',
+      image: '/image.png',
       alt: 'Upton Tea premium blended tea pouch',
       packs: [
         { size: 'Sachet', price: '₹5' },
