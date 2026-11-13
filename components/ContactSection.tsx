@@ -3,17 +3,42 @@
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 
+// Web3Forms public access key (safe to ship in client code; it only allows form submissions to the account's inbox)
+const WEB3FORMS_ACCESS_KEY = 'fe1cca0f-560f-46e7-9b6c-645cd3961f60'
+
 export default function ContactSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 4000)
-    setFormData({ name: '', email: '', phone: '', message: '' })
+    setSending(true)
+    setSendError('')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: 'New enquiry from foodwud.com',
+          from_name: 'Foodwud Website',
+          ...formData,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) throw new Error(data.message || 'Submission failed')
+      setSubmitted(true)
+      setFormData({ name: '', email: '', phone: '', message: '' })
+      setTimeout(() => setSubmitted(false), 4000)
+    } catch {
+      setSendError('Sorry, your message could not be sent. Please try again, or email us at info@foodwud.com.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const contactItems: { icon: React.ReactNode; label: string; lines: { text: string; href?: string }[] }[] = [
@@ -237,13 +262,15 @@ export default function ContactSection() {
                       className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#c9a227] transition-colors resize-none"
                     />
                   </div>
+                  {sendError && <p className="text-red-300 text-xs">{sendError}</p>}
                   <motion.button
                     type="submit"
+                    disabled={sending}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[#c9a227] text-[#0d3d1a] py-4 rounded-xl font-semibold text-sm hover:bg-[#e6c45a] transition-colors duration-300 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full bg-[#c9a227] text-[#0d3d1a] py-4 rounded-xl font-semibold text-sm hover:bg-[#e6c45a] transition-colors duration-300 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    Send Message
+                    {sending ? 'Sending...' : 'Send Message'}
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
                     </svg>
