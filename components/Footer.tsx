@@ -13,9 +13,9 @@ const footerLinks = {
   ],
   Products: [
     { label: 'Upton Tea', href: '#products' },
-    { label: 'Fox Nuts (Makhana)', href: '#products' },
-    { label: 'Mustard Oil', href: '#products' },
     { label: 'Spice Range — Coming Soon', href: '#products' },
+    { label: 'Fox Nuts (Makhana) — Upcoming', href: '#products' },
+    { label: 'Mustard Oil — Upcoming', href: '#products' },
   ],
   Legal: [
     { label: 'Privacy Policy', href: '#' },
@@ -164,6 +164,12 @@ export default function Footer() {
                 </svg>
                 <span>GST: 19AAGCF7122F1ZP</span>
               </div>
+              <div className="flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
+                  <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18" />
+                </svg>
+                <span>IEC: AAGCF7122F</span>
+              </div>
             </div>
 
             {/* Certifications */}
@@ -172,6 +178,7 @@ export default function Footer() {
                 { label: '100% Trusted' },
                 { label: 'ISO 9001:2015' },
                 { label: 'FSSAI 22826080000524' },
+                { label: 'IEC AAGCF7122F' },
               ].map((c) => (
                 <span
                   key={c.label}

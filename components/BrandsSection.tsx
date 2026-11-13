@@ -117,7 +117,7 @@ export default function BrandsSection() {
           className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
         >
           {/* Image */}
-          <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl shadow-green-900/10">
+          <div className={`relative rounded-3xl overflow-hidden shadow-2xl shadow-green-900/10 ${activeBrand.id === 'upton-tea' ? 'aspect-[3/4] w-full max-w-md mx-auto' : 'aspect-[4/3]'}`}>
             <div
               className="absolute inset-0"
               style={{ background: `linear-gradient(135deg, ${activeBrand.color}ee, ${activeBrand.color}99)` }}
@@ -126,7 +126,7 @@ export default function BrandsSection() {
               src={activeBrand.image}
               alt={`${activeBrand.name} product lineup`}
               fill
-              className={activeBrand.id === 'upton-tea' ? 'object-contain' : 'object-cover'}
+              className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
             {/* Highlight badge */}
@@ -212,7 +212,7 @@ export default function BrandsSection() {
                   src={brand.image}
                   alt={brand.name}
                   fill
-                  className="object-cover"
+                  className={brand.id === 'upton-tea' ? 'object-cover object-top' : 'object-cover'}
                   sizes="(max-width: 768px) 50vw, 25vw"
                 />
               </div>

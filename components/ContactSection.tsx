@@ -140,6 +140,10 @@ export default function ContactSection() {
                 <p className="text-white/75 text-sm font-mono">19AAGCF7122F1ZP</p>
               </div>
               <div>
+                <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">Importer-Exporter Code (IEC)</p>
+                <p className="text-white/75 text-sm font-mono">AAGCF7122F</p>
+              </div>
+              <div>
                 <p className="text-[#c9a227] text-xs font-semibold uppercase tracking-wide mb-1">ISO Certified</p>
                 <p className="text-white/75 text-sm font-mono">9001:2015</p>
               </div>

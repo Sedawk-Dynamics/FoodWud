@@ -116,6 +116,7 @@ export default function WhyChooseUs() {
               { title: '100% Trusted', sub: 'Quality Assured' },
               { title: 'ISO Certified', sub: '9001:2015' },
               { title: 'FSSAI Certified', sub: '22826080000524' },
+              { title: 'IEC Registered', sub: 'AAGCF7122F' },
             ].map((cert) => (
               <div
                 key={cert.title}
